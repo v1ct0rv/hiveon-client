@@ -27,7 +27,7 @@ wallet = wallet.replace('0x', '');
 
 console.log("Startign Hiveon Client....")
 
-setInterval(function() { 
+setInterval(function() {
     const writeApi = client.getWriteApi(org, bucket)
     writeApi.useDefaultTags({host: 'victorv-pc'})
     axios.get(`https://hiveon.net/api/v1/stats/miner/${wallet}/ETH/billing-acc`)
@@ -46,6 +46,12 @@ setInterval(function() {
                             .timestamp(new Date(earningStat.timestamp))
         writeApi.writePoint(point)
         }
+
+        const pointExpected = new Point('expected')
+                            .floatField('reward24H', res.data.expectedReward24H)
+                            .floatField('rewardWeek', res.data.expectedRewardWeek)
+                            .timestamp(new Date())
+        writeApi.writePoint(pointExpected)
 
         writeApi.close()
         .then(() => {
